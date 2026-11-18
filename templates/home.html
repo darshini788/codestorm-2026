@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}CampusConnect | RIT Hassan{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <!-- Hero Banner -->
+    <div class="p-5 mb-4 bg-dark text-white rounded-4 shadow-sm position-relative overflow-hidden text-center">
+        <div class="position-absolute top-0 start-0 w-100 h-100 opacity-10 bg-primary"></div>
+        <div class="position-relative z-1">
+            <span class="badge bg-primary px-3 py-2 rounded-pill fw-semibold mb-3">CODESTORM 2026 — November Edition</span>
+            <h1 class="display-5 fw-bold mb-2">🚀 CODESTORM 2026</h1>
+            <p class="lead text-light mb-4 mx-auto" style="max-width: 700px;">
+                <strong>Think. Create. Innovate. Build the Future.</strong> A community-driven technical challenge organized by GDG on Campus – RIT Hassan.
+            </p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{% url 'events_list' %}" class="btn btn-primary px-4 fw-semibold shadow-sm"><i class="fa-solid fa-calendar-days me-2"></i>Explore Events</a>
+                <a href="{% url 'groups_list' %}" class="btn btn-outline-light px-4 fw-semibold">Student Groups</a>
+                <a href="{% url 'register' %}" class="btn btn-success px-4 fw-semibold"><i class="fa-solid fa-user-plus me-2"></i>Register Now</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3 Partner Cards Grid -->
+    <div class="row g-4 text-center">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
+                <div class="mb-3 d-flex align-items-center justify-content-center bg-light rounded-circle mx-auto shadow-sm" style="width: 80px; height: 80px;">
+                    <img src="{% static 'images/gdg_logo.png' %}" alt="GDG" style="width: 60px; height: 60px; object-fit: contain;" onerror="this.src='https://raw.githubusercontent.com/Yashawantha26/codestorm-2026/main/gdg_logo.png'">
+                </div>
+                <h5 class="fw-bold text-dark mb-1">GDG on Campus</h5>
+                <p class="text-muted small mb-0">RIT Hassan Chapter</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
+                <div class="mb-3 d-flex align-items-center justify-content-center bg-light rounded-circle mx-auto shadow-sm" style="width: 80px; height: 80px;">
+                    <img src="{% static 'images/rit_logo.png' %}" alt="RIT" style="width: 60px; height: 60px; object-fit: contain;" onerror="this.src='https://raw.githubusercontent.com/Yashawantha26/codestorm-2026/main/rit_logo.png'">
+                </div>
+                <h5 class="fw-bold text-dark mb-1">RIT Hassan</h5>
+                <p class="text-muted small mb-0">Rajeev Institute of Technology</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
+                <div class="mb-3 d-flex align-items-center justify-content-center bg-light rounded-circle mx-auto shadow-sm" style="width: 80px; height: 80px;">
+                    <img src="{% static 'images/cse_logo.png' %}" alt="CSE" style="width: 60px; height: 60px; object-fit: contain;" onerror="this.src='https://raw.githubusercontent.com/Yashawantha26/codestorm-2026/main/cse_logo.png'">
+                </div>
+                <h5 class="fw-bold text-dark mb-1">CSE Department</h5>
+                <p class="text-muted small mb-0">Computer Science & Engineering</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Student Dashboard | CampusConnect{% endblock %}
+{% block content %}
+<div class="py-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center bg-white p-4 rounded-4 shadow-sm border mb-4 gap-3">
+        <div>
+            <h2 class="fw-bold mb-1">Welcome, {{ request.user.first_name|default:request.user.username }}! 👋</h2>
+            <p class="text-muted mb-0">Here is your student portal dashboard and academic info.</p>
+        </div>
+        <a href="{% url 'edit_profile' %}" class="btn btn-primary fw-semibold px-4"><i class="fa-solid fa-user-pen me-2"></i> Edit Profile</a>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-12 col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 text-center">
+                <div class="mb-3">
+                    {% if profile.avatar %}
+                        <img src="{{ profile.avatar.url }}" class="rounded-circle shadow-sm" width="90" height="90" style="object-fit: cover;">
+                    {% else %}
+                        <div class="bg-primary-subtle text-primary rounded-circle d-inline-flex align-items-center justify-content-center fw-bold fs-3" style="width: 90px; height: 90px;">
+                            {{ request.user.username|slice:":2"|upper }}
+                        </div>
+                    {% endif %}
+                </div>
+                <h4 class="fw-bold mb-1">{{ request.user.get_full_name|default:request.user.username }}</h4>
+                <p class="text-muted small mb-3">@{{ request.user.username }}</p>
+                <span class="badge bg-primary px-3 py-2">Student</span>
+            </div>
+        </div>
+        <div class="col-12 col-md-8">
+            <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                <h5 class="fw-bold mb-3"><i class="fa-solid fa-id-card text-primary me-2"></i>Academic Details</h5>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="p-3 bg-light rounded-3">
+                            <small class="text-muted d-block">USN</small>
+                            <span class="fw-semibold">{{ profile.usn|default:"Not Provided" }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 bg-light rounded-3">
+                            <small class="text-muted d-block">Department</small>
+                            <span class="fw-semibold">{{ profile.get_department_display|default:"Not Provided" }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 bg-light rounded-3">
+                            <small class="text-muted d-block">Semester</small>
+                            <span class="fw-semibold">{{ profile.get_semester_display|default:"Not Provided" }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 bg-light rounded-3">
+                            <small class="text-muted d-block">Phone Number</small>
+                            <span class="fw-semibold">{{ profile.phone_number|default:"Not Provided" }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

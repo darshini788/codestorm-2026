@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Student Groups | CampusConnect{% endblock %}
+{% block content %}
+<div class="py-4">
+    <h2 class="fw-bold mb-4"><i class="fa-solid fa-people-group text-primary me-2"></i>Student Clubs & Technical Groups</h2>
+    <div class="row g-4">
+        {% for group in groups %}
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100 p-4">
+                <h4 class="fw-bold text-dark">{{ group.name }}</h4>
+                <p class="text-muted small flex-grow-1">{{ group.description }}</p>
+                <p class="small text-muted mb-3"><strong>Leader:</strong> {{ group.group_leader.username|default:"Not Assigned" }}</p>
+                
+                {% if user.is_authenticated %}
+                    {% if group.group_leader == user or user.is_staff %}
+                        <a href="{% url 'manage_club' group.id %}" class="btn btn-dark btn-sm w-100 fw-semibold">
+                            <i class="fa-solid fa-sliders me-1"></i> Manage Requests & Members
+                        </a>
+                    {% else %}
+                        {% for gid, status in user_memberships.items %}
+                            {% if gid == group.id %}
+                                <span class="badge bg-info text-dark w-100 py-2">Status: {{ status|upper }}</span>
+                            {% endif %}
+                        {% endfor %}
+                        {% if group.id not in user_memberships %}
+                            <a href="{% url 'request_join_group' group.id %}" class="btn btn-outline-primary btn-sm w-100 fw-semibold">Request to Join</a>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5"><p class="text-muted">No student groups created yet.</p></div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

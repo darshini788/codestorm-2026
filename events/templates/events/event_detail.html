@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}{{ event.title }} | CampusConnect{% endblock %}
+{% block content %}
+<div class="row justify-content-center py-4">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm rounded-4 p-4">
+            <span class="badge bg-primary text-white align-self-start mb-2">{{ event.get_category_display }}</span>
+            <h1 class="fw-bold mb-3">{{ event.title }}</h1>
+            <p class="text-muted lead">{{ event.description }}</p>
+            <hr>
+            <div class="row g-3 mb-4">
+                <div class="col-md-6"><strong>Date & Time:</strong> {{ event.date_time|date:"M d, Y - H:i" }}</div>
+                <div class="col-md-6"><strong>Venue / Link:</strong> {{ event.venue_or_link }}</div>
+                <div class="col-md-6"><strong>Registration Deadline:</strong> {{ event.registration_deadline|date:"M d, Y - H:i" }}</div>
+            </div>
+            {% if user.is_authenticated %}
+                {% if is_registered %}
+                    <div class="alert alert-success fw-semibold text-center">You are registered for this event!</div>
+                {% else %}
+                    <a href="{% url 'register_event' event.id %}" class="btn btn-primary btn-lg w-100 fw-semibold">Register for Event</a>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'login' %}" class="btn btn-outline-primary btn-lg w-100 fw-semibold">Log in to Register</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard | CampusConnect{% endblock %}
+{% block content %}
+<div class="py-3">
+    <!-- Top Admin Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center bg-dark text-white p-4 rounded-4 shadow-sm mb-4 gap-3">
+        <div>
+            <span class="badge bg-warning text-dark mb-1">ADMINISTRATOR CONTROL PANEL</span>
+            <h2 class="fw-bold mb-0">Welcome, {{ request.user.username }}</h2>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{% url 'admin_change_password' %}" class="btn btn-outline-warning btn-sm"><i class="fa-solid fa-key me-1"></i> Change Password</a>
+            <a href="/admin/" class="btn btn-outline-light btn-sm"><i class="fa-solid fa-database me-1"></i> Django DB Admin</a>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-info alert-dismissible fade show">{{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Stats Row -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm rounded-4 p-3 text-center">
+                <i class="fa-solid fa-users text-primary fs-2 mb-2"></i>
+                <h3 class="fw-bold mb-0">{{ total_students }}</h3>
+                <small class="text-muted">Registered Students</small>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm rounded-4 p-3 text-center">
+                <i class="fa-solid fa-calendar-check text-success fs-2 mb-2"></i>
+                <h3 class="fw-bold mb-0">{{ total_events }}</h3>
+                <small class="text-muted">Published Events</small>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm rounded-4 p-3 text-center">
+                <i class="fa-solid fa-people-group text-info fs-2 mb-2"></i>
+                <h3 class="fw-bold mb-0">{{ total_groups }}</h3>
+                <small class="text-muted">Student Clubs</small>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm rounded-4 p-3 text-center">
+                <i class="fa-solid fa-file-arrow-down text-warning fs-2 mb-2"></i>
+                <h3 class="fw-bold mb-0">{{ total_resources }}</h3>
+                <small class="text-muted">Uploaded Resources</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Responsive Management Tabs -->
+    <ul class="nav nav-pills mb-3 gap-2 flex-nowrap overflow-auto pb-2" id="adminTabs" role="tablist">
+        <li class="nav-item"><button class="nav-link active text-nowrap" data-bs-toggle="pill" data-bs-target="#tab-events">Events</button></li>
+        <li class="nav-item"><button class="nav-link text-nowrap" data-bs-toggle="pill" data-bs-target="#tab-groups">Student Groups</button></li>
+        <li class="nav-item"><button class="nav-link text-nowrap" data-bs-toggle="pill" data-bs-target="#tab-announcements">Announcements</button></li>
+        <li class="nav-item"><button class="nav-link text-nowrap" data-bs-toggle="pill" data-bs-target="#tab-resources">Resources</button></li>
+        <li class="nav-item"><button class="nav-link text-nowrap" data-bs-toggle="pill" data-bs-target="#tab-users">User Access & Roles</button></li>
+    </ul>
+
+    <div class="tab-content">
+        <!-- Events Tab -->
+        <div class="tab-pane fade show active" id="tab-events">
+            <div class="row g-4">
+                <div class="col-12 col-lg-5">
+                    <div class="card border-0 shadow-sm rounded-4 p-4">
+                        <h5 class="fw-bold mb-3"><i class="fa-solid fa-plus-circle text-primary me-2"></i>Add New Event</h5>
+                        <form action="{% url 'admin_add_event' %}" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{ event_form.as_p }}
+                            <button type="submit" class="btn btn-primary w-100 fw-semibold">Publish Event</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-7">
+                    <div class="card border-0 shadow-sm rounded-4 p-4">
+                        <h5 class="fw-bold mb-3">Manage Events</h5>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light"><tr><th>Title</th><th>Category</th><th>Date</th><th>Action</th></tr></thead>
+                                <tbody>
+                                    {% for event in events %}
+                                    <tr>
+                                        <td class="fw-semibold">{{ event.title }}</td>
+                                        <td><span class="badge bg-secondary">{{ event.get_category_display }}</span></td>
+                                        <td class="small">{{ event.date_time|date:"M d, Y H:i" }}</td>
+                                        <td><a href="{% url 'admin_delete_event' event.id %}" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></a></td>
+                                    </tr>
+                                    {% empty %}<tr><td colspan="4" class="text-muted text-center">No events created yet.</td></tr>{% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Groups Tab -->
+        <div class="tab-pane fade" id="tab-groups">
+            <div class="row g-4">
+                <div class="col-12 col-lg-5">
+                    <div class="card border-0 shadow-sm rounded-4 p-4">
+                        <h5 class="fw-bold mb-3">Create Student Group / Club</h5>
+                        <form action="{% url 'admin_add_group' %}" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{ group_form.as_p }}
+                            <button type="submit" class="btn btn-primary w-100 fw-semibold">Create Group</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-7">
+                    <div class="card border-0 shadow-sm rounded-4 p-4 mb-3">
+                        <h5 class="fw-bold mb-3">Pending Membership Requests</h5>
+                        {% for req in pending_memberships %}
+                        <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+                            <div><strong>{{ req.student.username }}</strong> wants to join <strong>{{ req.group.name }}</strong></div>
+                            <div class="d-flex gap-1">
+                                <a href="{% url 'admin_membership_action' req.id 'approve' %}" class="btn btn-sm btn-success">Approve</a>
+                                <a href="{% url 'admin_membership_action' req.id 'reject' %}" class="btn btn-sm btn-danger">Reject</a>
+                            </div>
+                        </div>
+                        {% empty %}<p class="text-muted small mb-0">No pending group requests.</p>{% endfor %}
+                    </div>
+                    <div class="card border-0 shadow-sm rounded-4 p-4">
+                        <h5 class="fw-bold mb-3">Active Groups</h5>
+                        <ul class="list-group list-group-flush">
+                            {% for g in groups %}<li class="list-group-item d-flex justify-content-between"><span><strong>{{ g.name }}</strong></span><span class="text-muted small">Leader: {{ g.group_leader.username|default:"None" }}</span></li>{% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Announcements Tab -->
+        <div class="tab-pane fade" id="tab-announcements">
+            <div class="row g-4">
+                <div class="col-12 col-lg-5">
+                    <div class="card border-0 shadow-sm rounded-4 p-4">
+                        <h5 class="fw-bold mb-3">Publish Announcement</h5>
+                        <form action="{% url 'admin_add_announcement' %}" method="post">
+                            {% csrf_token %}
+                            {{ announcement_form.as_p }}
+                            <button type="submit" class="btn btn-primary w-100 fw-semibold">Post Notice</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-7">
+                    <div class="card border-0 shadow-sm rounded-4 p-4">
+                        <h5 class="fw-bold mb-3">Recent Announcements</h5>
+                        {% for ann in announcements %}
+                        <div class="border-bottom pb-2 mb-2">
+                            <span class="badge bg-danger me-1">{{ ann.priority|upper }}</span>
+                            <span class="badge bg-secondary">{{ ann.target_audience }}</span>
+                            <h6 class="fw-bold mt-1 mb-1">{{ ann.title }}</h6>
+                            <p class="small text-muted mb-0">{{ ann.content }}</p>
+                        </div>
+                        {% empty %}<p class="text-muted">No announcements posted.</p>{% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resources Tab -->
+        <div class="tab-pane fade" id="tab-resources">
+            <div class="row g-4">
+                <div class="col-12 col-lg-5">
+                    <div class="card border-0 shadow-sm rounded-4 p-4">
+                        <h5 class="fw-bold mb-3">Upload Study Material / Form</h5>
+                        <form action="{% url 'admin_add_resource' %}" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{ resource_form.as_p }}
+                            <button type="submit" class="btn btn-primary w-100 fw-semibold">Upload File</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-7">
+                    <div class="card border-0 shadow-sm rounded-4 p-4">
+                        <h5 class="fw-bold mb-3">Uploaded Resources</h5>
+                        {% for r in resources %}
+                        <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+                            <div><strong>{{ r.title }}</strong> <span class="badge bg-light text-dark border">{{ r.get_category_display }}</span></div>
+                            <a href="{{ r.file.url }}" class="btn btn-sm btn-outline-primary" download>Download</a>
+                        </div>
+                        {% empty %}<p class="text-muted">No resources uploaded yet.</p>{% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Access & Roles Tab -->
+        <div class="tab-pane fade" id="tab-users">
+            <div class="card border-0 shadow-sm rounded-4 p-4">
+                <h5 class="fw-bold mb-3">Manage User Permissions & Access</h5>
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead class="table-light"><tr><th>User</th><th>Email</th><th>USN / Dept</th><th>Role</th><th>Grant Access</th></tr></thead>
+                        <tbody>
+                            {% for u in users %}
+                            <tr>
+                                <td class="fw-semibold">{{ u.username }}</td>
+                                <td class="small">{{ u.email }}</td>
+                                <td class="small">{{ u.profile.usn|default:"-" }} ({{ u.profile.department|default:"-" }})</td>
+                                <td><span class="badge bg-dark">{{ u.profile.role|default:"admin" }}</span></td>
+                                <td>
+                                    <form action="{% url 'admin_update_role' u.id %}" method="post" class="d-flex gap-2">
+                                        {% csrf_token %}
+                                        <select name="role" class="form-select form-select-sm" style="width: 140px;">
+                                            <option value="student" {% if u.profile.role == 'student' %}selected{% endif %}>Student</option>
+                                            <option value="group_leader" {% if u.profile.role == 'group_leader' %}selected{% endif %}>Group Leader</option>
+                                            <option value="admin" {% if u.profile.role == 'admin' %}selected{% endif %}>Administrator</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                                        {% if not u.is_superuser %}<a href="{% url 'admin_delete_user' u.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Remove this student?');"><i class="fa-solid fa-trash"></i></a>{% endif %}
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

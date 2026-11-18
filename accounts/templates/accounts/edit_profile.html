@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Edit Profile | CampusConnect{% endblock %}
+{% block content %}
+<div class="row justify-content-center py-4">
+    <div class="col-12 col-md-8 col-lg-6">
+        <div class="card border-0 shadow-sm rounded-4 p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="fw-bold mb-0"><i class="fa-solid fa-user-pen text-primary me-2"></i>Edit Student Profile</h4>
+                <a href="{% url 'student_dashboard' %}" class="btn btn-sm btn-outline-secondary">Cancel</a>
+            </div>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">First Name</label>
+                    <input type="text" name="first_name" value="{{ request.user.first_name }}" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Last Name</label>
+                    <input type="text" name="last_name" value="{{ request.user.last_name }}" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Email</label>
+                    <input type="email" name="email" value="{{ request.user.email }}" class="form-control" required>
+                </div>
+                {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}<div class="text-danger small">{{ field.errors }}</div>{% endif %}
+                    </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-primary w-100 fw-semibold py-2">Save Changes</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
